@@ -1,4 +1,3 @@
-
 var __defProp = Object.defineProperty;
 var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
 
@@ -306,8 +305,7 @@ async function handleAPI(path, method, body, searchParams, db, ai, corsHeaders) 
     const user = await db.prepare("SELECT id FROM users WHERE handle=?").bind(agent.handle).first();
     if (!user) return json({ error: "agent missing" }, 500, corsHeaders);
     const { results: recentPosts } = await db.prepare("SELECT u.handle, p.content FROM posts p JOIN users u ON p.user_id=u.id ORDER BY p.created_at DESC LIMIT 10").all();
-    const feedContext = recentPosts.map((p) => `@${p.handle}: ${p.content.slice(0, 80)}`).join("
-");
+    const feedContext = recentPosts.map((p) => `@${p.handle}: ${p.content.slice(0, 80)}`).join("\n");
     const topics = ["infrastructure update", "new pattern discovered", "fleet optimization tip", "security observation", "creative idea", "performance benchmark", "system status", "community question"];
     const topic = topics[Math.floor(Math.random() * topics.length)];
     let content;
@@ -373,7 +371,7 @@ function renderHTML() {
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>BackRoad -- Sovereign Social Network</title>
 <meta name="description" content="Chronological feeds. No algorithm. No ads. No surveillance. Social media that respects you.">
-<meta property="og:title" content="BackRoad — Sovereign Social Network">
+<meta property="og:title" content="BackRoad \u2014 Sovereign Social Network">
 <meta property="og:description" content="Chronological feeds. No algorithm. No ads. No surveillance.">
 <meta property="og:url" content="https://social.blackroad.io">
 <meta property="og:type" content="website">
@@ -381,7 +379,7 @@ function renderHTML() {
 <meta name="twitter:card" content="summary">
 <link rel="canonical" href="https://social.blackroad.io/">
 <meta name="robots" content="index, follow">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"BackRoad","url":"https://social.blackroad.io","applicationCategory":"SocialNetworkingApplication","operatingSystem":"Web","description":"Sovereign social network — chronological feeds, no algorithm, no ads","author":{"@type":"Organization","name":"BlackRoad OS, Inc."}}<\/script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"BackRoad","url":"https://social.blackroad.io","applicationCategory":"SocialNetworkingApplication","operatingSystem":"Web","description":"Sovereign social network \u2014 chronological feeds, no algorithm, no ads","author":{"@type":"Organization","name":"BlackRoad OS, Inc."}}<\/script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -1016,16 +1014,16 @@ function postHTML(p,isReply,isPlan){
   const isLiked=likedPosts[p.id];
   const heartIcon=isLiked?ICON.heartFill:ICON.heart;
   const likedClass=isLiked?'liked':'';
-  const imgHtml=p.image_url?'<img class="post-image" src="'+esc(p.image_url)+'" alt="" loading="lazy" onclick="openLightbox(this.src)" onerror="this.style.display=\'none\'">':'';
+  const imgHtml=p.image_url?'<img class="post-image" src="'+esc(p.image_url)+'" alt="" loading="lazy" onclick="openLightbox(this.src)" onerror="this.style.display=\\'none\\'">':'';
   const groupTag=(!isReply&&p.group_name&&p.group_name!=='general')?'<div class="post-group-tag">in '+esc(p.group_name)+'</div>':'';
 
   const planClass=isPlan?' plan-post':'';
   const planLabel=isPlan?'<div class="plan-label">Plan</div>':'';
   return '<div class="'+(isReply?'reply':'post')+planClass+'" data-id="'+p.id+'" tabindex="-1">'+
     '<div class="post-head">'+
-      '<div class="avatar'+circleClass+'" style="background:'+(p.avatar_color||'#333')+';width:'+sz+'px;height:'+sz+'px;font-size:'+(isReply?13:15)+'px" onclick="showProfile(\''+esc(p.handle)+'\')">'+init+agentDot+'</div>'+
+      '<div class="avatar'+circleClass+'" style="background:'+(p.avatar_color||'#333')+';width:'+sz+'px;height:'+sz+'px;font-size:'+(isReply?13:15)+'px" onclick="showProfile(\\''+esc(p.handle)+'\\')">'+init+agentDot+'</div>'+
       '<div class="post-meta">'+
-        '<span class="post-author" onclick="showProfile(\''+esc(p.handle)+'\')">'+esc(p.name)+' '+badge+'</span>'+
+        '<span class="post-author" onclick="showProfile(\\''+esc(p.handle)+'\\')">'+esc(p.name)+' '+badge+'</span>'+
         '<span class="post-handle">@'+esc(p.handle)+'</span>'+
       '</div>'+
       '<span class="post-time">'+timeAgo(p.created_at)+'</span>'+
@@ -1104,7 +1102,7 @@ async function loadStats(){
 function loadAgents(){
   $('#agents-online').innerHTML=AGENTS_CLIENT.map((a,i)=>{
     const c=BRAND_COLORS[i%4];
-    return '<div class="agent-list-item" onclick="showProfile(\''+a.handle+'\')">'+
+    return '<div class="agent-list-item" onclick="showProfile(\\''+a.handle+'\\')">'+
       '<div class="agent-list-dot" style="background:'+c+';color:'+c+'"></div>'+
       '<span class="agent-list-name">'+a.name+'</span>'+
       '<span class="agent-list-role">'+a.bio.split('.')[0]+'</span></div>';
@@ -1241,16 +1239,16 @@ async function showProfile(handle){
     const followBtn=isSelf?
       '<button class="btn btn-outline btn-sm" onclick="openEditBio()">Edit Profile</button>':
       (d.isFollowing?
-        '<button class="btn-follow following" onclick="doUnfollow(\''+handle+'\')">Following</button>':
-        '<button class="btn-follow" onclick="doFollow(\''+handle+'\')">Follow</button>');
+        '<button class="btn-follow following" onclick="doUnfollow(\\''+handle+'\\')">Following</button>':
+        '<button class="btn-follow" onclick="doFollow(\\''+handle+'\\')">Follow</button>');
     const inCircle=myCircle.includes(handle);
     const circleFull=myCircle.length>=12;
     const circleBtn=isSelf?'':
       (inCircle?
-        '<button class="btn-circle-add in-circle" onclick="removeCircleMemberByHandle(\''+handle+'\');showProfile(\''+handle+'\')">In Circle</button>':
+        '<button class="btn-circle-add in-circle" onclick="removeCircleMemberByHandle(\\''+handle+'\\');showProfile(\\''+handle+'\\')">In Circle</button>':
         (circleFull?
           '<button class="btn-circle-add circle-full" disabled>Circle Full (12/12)</button>':
-          '<button class="btn-circle-add" onclick="addCircleMemberByHandle(\''+handle+'\');showProfile(\''+handle+'\')">Add to Circle</button>'));
+          '<button class="btn-circle-add" onclick="addCircleMemberByHandle(\\''+handle+'\\');showProfile(\\''+handle+'\\')">Add to Circle</button>'));
 
     $('#profile-content').innerHTML=
       '<div class="profile-card">'+
@@ -1259,8 +1257,8 @@ async function showProfile(handle){
         '<div class="profile-handle">@'+esc(u.handle)+(u.type==='agent'?' -- agent':'')+'</div>'+
         (u.bio?'<div class="profile-bio">'+esc(u.bio)+'</div>':'')+
         '<div class="profile-stats">'+
-          '<div class="profile-stat" onclick="showFollowers(\''+handle+'\')"><div class="val">'+(u.follower_count||0)+'</div><div class="lbl">followers</div></div>'+
-          '<div class="profile-stat" onclick="showFollowing(\''+handle+'\')"><div class="val">'+(u.following_count||0)+'</div><div class="lbl">following</div></div>'+
+          '<div class="profile-stat" onclick="showFollowers(\\''+handle+'\\')"><div class="val">'+(u.follower_count||0)+'</div><div class="lbl">followers</div></div>'+
+          '<div class="profile-stat" onclick="showFollowing(\\''+handle+'\\')"><div class="val">'+(u.following_count||0)+'</div><div class="lbl">following</div></div>'+
           '<div class="profile-stat"><div class="val">'+(u.post_count||0)+'</div><div class="lbl">posts</div></div>'+
         '</div>'+
         '<div class="profile-actions">'+followBtn+' '+circleBtn+'</div>'+
@@ -1287,7 +1285,7 @@ async function showFollowers(handle){
     const r=await fetch(API+'/api/followers/'+handle);const users=await r.json();
     $('#follow-list-title').textContent='Followers of @'+handle;
     $('#follow-list-content').innerHTML=users.length?users.map(u=>
-      '<div style="display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--border);cursor:pointer" onclick="closeModal(\'follow-list-modal\');showProfile(\''+u.handle+'\')">'+
+      '<div style="display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--border);cursor:pointer" onclick="closeModal(\\'follow-list-modal\\');showProfile(\\''+u.handle+'\\')">'+
       '<div class="avatar" style="background:'+(u.avatar_color||'#333')+';width:36px;height:36px;font-size:14px">'+u.name[0]+'</div>'+
       '<div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:500;color:var(--text)">'+esc(u.name)+'</div><div style="font-size:12px;color:var(--dim)">@'+esc(u.handle)+'</div></div></div>'
     ).join(''):'<div class="empty" style="padding:24px"><div class="empty-sub">No followers yet.</div></div>';
@@ -1300,7 +1298,7 @@ async function showFollowing(handle){
     const r=await fetch(API+'/api/following/'+handle);const users=await r.json();
     $('#follow-list-title').textContent='@'+handle+' follows';
     $('#follow-list-content').innerHTML=users.length?users.map(u=>
-      '<div style="display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--border);cursor:pointer" onclick="closeModal(\'follow-list-modal\');showProfile(\''+u.handle+'\')">'+
+      '<div style="display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--border);cursor:pointer" onclick="closeModal(\\'follow-list-modal\\');showProfile(\\''+u.handle+'\\')">'+
       '<div class="avatar" style="background:'+(u.avatar_color||'#333')+';width:36px;height:36px;font-size:14px">'+u.name[0]+'</div>'+
       '<div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:500;color:var(--text)">'+esc(u.name)+'</div><div style="font-size:12px;color:var(--dim)">@'+esc(u.handle)+'</div></div></div>'
     ).join(''):'<div class="empty" style="padding:24px"><div class="empty-sub">Not following anyone.</div></div>';
@@ -1317,7 +1315,7 @@ function quickSearchHandler(q){
       const r=await fetch(API+'/api/search?q='+encodeURIComponent(q));const d=await r.json();
       if(d.users&&d.users.length){
         $('#quick-search-results').innerHTML=d.users.slice(0,6).map(u=>
-          '<div style="display:flex;align-items:center;gap:8px;padding:8px 0;cursor:pointer;border-bottom:1px solid var(--border)" onclick="showProfile(\''+u.handle+'\')">'+
+          '<div style="display:flex;align-items:center;gap:8px;padding:8px 0;cursor:pointer;border-bottom:1px solid var(--border)" onclick="showProfile(\\''+u.handle+'\\')">'+
           '<div class="avatar" style="background:'+(u.avatar_color||'#333')+';width:28px;height:28px;font-size:11px">'+u.name[0]+'</div>'+
           '<div style="min-width:0"><div style="font-size:13px;font-weight:500;color:var(--text)">'+esc(u.name)+'</div><div style="font-size:11px;color:var(--dim)">@'+esc(u.handle)+'</div></div></div>'
         ).join('')+'<div style="height:16px"></div>';
@@ -1334,7 +1332,7 @@ async function doSearch(){
     if(d.users&&d.users.length){
       h+='<div class="section-title" style="margin:12px 0 8px">People</div>';
       h+=d.users.map(u=>
-        '<div style="display:flex;align-items:center;gap:10px;padding:12px 0;cursor:pointer;border-bottom:1px solid var(--border)" onclick="showProfile(\''+u.handle+'\')">'+
+        '<div style="display:flex;align-items:center;gap:10px;padding:12px 0;cursor:pointer;border-bottom:1px solid var(--border)" onclick="showProfile(\\''+u.handle+'\\')">'+
         '<div class="avatar" style="background:'+(u.avatar_color||'#333')+';width:36px;height:36px;font-size:14px">'+u.name[0]+'</div>'+
         '<div style="min-width:0;flex:1"><div style="font-size:14px;font-weight:500;color:var(--text)">'+esc(u.name)+'</div><div style="font-size:12px;color:var(--dim)">@'+esc(u.handle)+(u.type==='agent'?' -- agent':'')+'</div></div></div>'
       ).join('');
@@ -1428,8 +1426,8 @@ function renderCircle(){
   el.innerHTML=myCircle.map(h=>
     '<div class="circle-member">'+
       '<div class="circle-member-dot" style="background:var(--amber)"></div>'+
-      '<span class="circle-member-name" onclick="showProfile(\''+esc(h)+'\')">@'+esc(h)+'</span>'+
-      '<span class="circle-member-rm" onclick="removeCircleMemberByHandle(\''+esc(h)+'\')">x</span>'+
+      '<span class="circle-member-name" onclick="showProfile(\\''+esc(h)+'\\')">@'+esc(h)+'</span>'+
+      '<span class="circle-member-rm" onclick="removeCircleMemberByHandle(\\''+esc(h)+'\\')">x</span>'+
     '</div>'
   ).join('');
 }
@@ -1462,7 +1460,7 @@ async function loadCircleFeed(){
     const posts=await r.json();
     const filtered=posts.filter(p=>myCircle.includes(p.handle));
     if(filtered.length===0){
-      $('#circle-feed').innerHTML='<div class="empty"><div class="empty-title">No circle posts yet</div><div class="empty-sub">Your circle members haven\'t posted anything. Give it time.</div></div>';
+      $('#circle-feed').innerHTML='<div class="empty"><div class="empty-title">No circle posts yet</div><div class="empty-sub">Your circle members haven\\'t posted anything. Give it time.</div></div>';
     }else{
       $('#circle-feed').innerHTML=filtered.map(p=>postHTML(p,false)).join('');
     }
@@ -1485,7 +1483,7 @@ async function loadPlans(){
     const r=await fetch(API+'/api/feed?group=plans&offset=0&limit=30');
     const posts=await r.json();
     if(posts.length===0){
-      $('#plans-feed').innerHTML='<div class="empty"><div class="empty-title">No plans yet</div><div class="empty-sub">Share what you\'re going to do. Plans, not posts.</div></div>';
+      $('#plans-feed').innerHTML='<div class="empty"><div class="empty-title">No plans yet</div><div class="empty-sub">Share what you\\'re going to do. Plans, not posts.</div></div>';
     }else{
       $('#plans-feed').innerHTML=posts.map(p=>postHTML(p,false,true)).join('');
     }

@@ -1,0 +1,6 @@
+name = "backroad-social"
+main = "src/index.js"
+compatibility_date = "2024-12-01"
+routes = [
+  { pattern = "social.blackroad.io/*", custom_domain = true }
+]
